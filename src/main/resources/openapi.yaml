@@ -1,0 +1,212 @@
+openapi: 3.0.3
+info:
+  title: Health Tracker API
+  description: Spring Boot API for Android health tracking application
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@healthtracker.com
+
+servers:
+  - url: http://localhost:8081
+    description: Local development server
+  - url: https://api.healthtracker.com
+    description: Production server
+
+security:
+  - bearerAuth: []
+
+paths:
+  /auth/token:
+    post:
+      tags:
+        - Authentication
+      summary: Generate OAuth 2.0 access token
+      description: Authenticate device and generate access token for API access
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRequest'
+            examples:
+              deviceAuth:
+                summary: Device authentication request
+                value:
+                  deviceId: "android-device-12345"
+      responses:
+        '200':
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+              examples:
+                successfulAuth:
+                  summary: Successful authentication response
+                  value:
+                    accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                    expiresIn: 3600
+        '400':
+          description: Bad request - invalid device ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /health/data:
+    post:
+      tags:
+        - Health Data
+      summary: Submit health tracking data
+      description: Submit daily health metrics including steps, active minutes, and calories burned
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HealthDataRequest'
+            examples:
+              dailyHealthData:
+                summary: Daily health metrics submission
+                value:
+                  totalSteps: 8542
+                  totalActiveMinutes: 67
+                  totalCaloriesBurned: 2180.5
+                  date: "2024-03-15"
+      responses:
+        '200':
+          description: Health data submitted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              examples:
+                dataSubmitted:
+                  summary: Successful data submission
+                  value:
+                    message: "Health data submitted successfully"
+        '400':
+          description: Bad request - invalid data format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - invalid or expired token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Unprocessable entity - validation errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: OAuth 2.0 Bearer token authentication
+
+  schemas:
+    TokenRequest:
+      type: object
+      required:
+        - deviceId
+      properties:
+        deviceId:
+          type: string
+          description: Unique identifier for the requesting device
+          example: "android-device-12345"
+          minLength: 1
+          maxLength: 255
+
+    TokenResponse:
+      type: object
+      required:
+        - accessToken
+        - expiresIn
+      properties:
+        accessToken:
+          type: string
+          description: OAuth 2.0 access token
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        expiresIn:
+          type: integer
+          format: int64
+          description: Token expiration time in seconds
+          example: 3600
+
+    HealthDataRequest:
+      type: object
+      required:
+        - totalSteps
+        - totalActiveMinutes
+        - totalCaloriesBurned
+        - date
+      properties:
+        totalSteps:
+          type: integer
+          description: Total number of steps taken
+          minimum: 0
+          example: 8542
+        totalActiveMinutes:
+          type: integer
+          description: Total active minutes
+          minimum: 0
+          example: 67
+        totalCaloriesBurned:
+          type: number
+          format: double
+          description: Total calories burned
+          minimum: 0
+          example: 2180.5
+        date:
+          type: string
+          format: date
+          description: Date in ISO 8601 format (YYYY-MM-DD)
+          example: "2024-03-15"
+
+    SuccessResponse:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          description: Success message
+          example: "Health data submitted successfully"
+
+    ErrorResponse:
+      type: object
+      required:
+        - error
+        - message
+      properties:
+        error:
+          type: string
+          description: Error code
+          example: "INVALID_REQUEST"
+        message:
+          type: string
+          description: Human-readable error message
+          example: "Invalid device ID provided"
+        timestamp:
+          type: string
+          format: date-time
+          description: Error timestamp
+          example: "2024-03-15T10:30:00Z"
