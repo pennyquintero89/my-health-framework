@@ -1,5 +1,6 @@
-package com.pennyquin.openapi.api;
+package com.pennyquin.openapi.api.impl;
 
+import com.pennyquin.openapi.api.HealthApi;
 import jakarta.annotation.Generated;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

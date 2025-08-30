@@ -1,0 +1,56 @@
+package com.pennyquin.healthframework.controller;
+
+import com.pennyquin.healthframework.dto.HealthDataDTO;
+import com.pennyquin.healthframework.service.HealthDataService;
+import com.pennyquin.openapi.api.HealthApi;
+import com.pennyquin.openapi.model.HealthDataRequest;
+import com.pennyquin.openapi.model.SuccessResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class HealthController implements HealthApi {
+
+    @Autowired
+    private HealthDataService healthDataService;
+
+    @Override
+    public ResponseEntity<SuccessResponse> healthDataPost(HealthDataRequest healthDataRequest) {
+        try {
+            if (healthDataRequest == null) {
+                return ResponseEntity.badRequest().build();
+            }
+
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication == null || !authentication.isAuthenticated()) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+
+            String userId = authentication.getPrincipal().toString();
+
+            HealthDataDTO healthDataDTO = new HealthDataDTO(
+                    userId,
+                    healthDataRequest.getTotalSteps(),
+                    healthDataRequest.getTotalActiveMinutes(),
+                    healthDataRequest.getTotalCaloriesBurned(),
+                    healthDataRequest.getDate()
+            );
+
+            healthDataService.saveHealthData(healthDataDTO);
+
+            SuccessResponse response = new SuccessResponse();
+            response.setMessage("Health data submitted successfully");
+
+            return ResponseEntity.ok(response);
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+}
