@@ -1,6 +1,9 @@
-package com.pennyquin.openapi.api;
+package com.pennyquin.openapi.api.impl;
 
+import com.pennyquin.openapi.api.AuthApi;
 import jakarta.annotation.Generated;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +16,8 @@ import java.util.Optional;
 @RequestMapping("${openapi.healthTracker.base-path:}")
 public class AuthApiController implements AuthApi {
 
+
+    private static final Logger log = LoggerFactory.getLogger(AuthApiController.class);
     private final NativeWebRequest request;
 
     @Autowired
