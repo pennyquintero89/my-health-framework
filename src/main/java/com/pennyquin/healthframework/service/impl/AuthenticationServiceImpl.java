@@ -5,6 +5,8 @@ import com.pennyquin.healthframework.entity.User;
 import com.pennyquin.healthframework.repository.UserRepository;
 import com.pennyquin.healthframework.service.AuthenticationService;
 import com.pennyquin.openapi.configuration.security.JwtTokenProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
@@ -16,6 +18,8 @@ import java.time.LocalDateTime;
 @Profile({"qa", "prod"})
 public class AuthenticationServiceImpl implements AuthenticationService {
 
+
+    private static final Logger log = LoggerFactory.getLogger(AuthenticationServiceImpl.class);
     @Autowired
     private UserRepository userRepository;
 

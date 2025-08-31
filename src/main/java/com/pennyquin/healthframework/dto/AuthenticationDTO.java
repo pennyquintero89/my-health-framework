@@ -7,7 +7,8 @@ public class AuthenticationDTO {
     private String accessToken;
     private Long expiresIn;
 
-    public AuthenticationDTO() {}
+    public AuthenticationDTO() {
+    }
 
     public AuthenticationDTO(String deviceId, String userId, String accessToken, Long expiresIn) {
         this.deviceId = deviceId;

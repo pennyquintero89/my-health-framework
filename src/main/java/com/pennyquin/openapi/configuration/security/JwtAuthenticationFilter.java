@@ -18,6 +18,7 @@ import java.util.ArrayList;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+
     @Autowired
     private JwtTokenProvider tokenProvider;
 

@@ -14,7 +14,7 @@ servers:
     description: Production server
 
 security:
-  - bearerAuth: []
+  - bearerAuth: [ ]
 
 paths:
   /auth/token:
@@ -23,7 +23,7 @@ paths:
         - Authentication
       summary: Generate OAuth 2.0 access token
       description: Authenticate device and generate access token for API access
-      security: []
+      security: [ ]
       requestBody:
         required: true
         content:
@@ -68,7 +68,7 @@ paths:
       summary: Submit health tracking data
       description: Submit daily health metrics including steps, active minutes, and calories burned
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       requestBody:
         required: true
         content:

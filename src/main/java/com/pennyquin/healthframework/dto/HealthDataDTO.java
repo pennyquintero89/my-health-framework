@@ -10,7 +10,8 @@ public class HealthDataDTO {
     private Double totalCaloriesBurned;
     private LocalDate date;
 
-    public HealthDataDTO() {}
+    public HealthDataDTO() {
+    }
 
     public HealthDataDTO(String userId, Integer totalSteps, Integer totalActiveMinutes,
                          Double totalCaloriesBurned, LocalDate date) {
