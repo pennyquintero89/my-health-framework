@@ -61,7 +61,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
-  /health/data:
+  /health/data/daily:
     post:
       tags:
         - Health Data
@@ -74,15 +74,22 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/HealthDataRequest'
+              $ref: '#/components/schemas/DailyReportRequest'
             examples:
               dailyHealthData:
                 summary: Daily health metrics submission
                 value:
-                  totalSteps: 8542
-                  totalActiveMinutes: 67
-                  totalCaloriesBurned: 2180.5
                   date: "2024-03-15"
+                  steps: 8542
+                  stand: 10
+                  distance: 100
+                  activeMinutes: 67
+                  activeCalories: 300.5
+                  totalCalories: 1500.5
+                  basalMetabolicRate: 900.5
+                  averageHeartRate: 60
+                  averageRestingHeartRate: 45
+                  timeZone: "-0500"
       responses:
         '200':
           description: Health data submitted successfully
@@ -151,35 +158,79 @@ components:
           description: Token expiration time in seconds
           example: 3600
 
-    HealthDataRequest:
+    DailyReportRequest:
       type: object
       required:
-        - totalSteps
-        - totalActiveMinutes
-        - totalCaloriesBurned
         - date
+        - steps
+        - distance
+        - stand
+        - activeMinutes
+        - activeCalories
+        - totalCalories
+        - basalMetabolicRate
+        - averageHeartRate
+        - averageRestingHeartRate
+        - timeZone
       properties:
-        totalSteps:
-          type: integer
-          description: Total number of steps taken
-          minimum: 0
-          example: 8542
-        totalActiveMinutes:
-          type: integer
-          description: Total active minutes
-          minimum: 0
-          example: 67
-        totalCaloriesBurned:
-          type: number
-          format: double
-          description: Total calories burned
-          minimum: 0
-          example: 2180.5
         date:
           type: string
           format: date
           description: Date in ISO 8601 format (YYYY-MM-DD)
           example: "2024-03-15"
+        steps:
+          type: integer
+          description: Total number of steps taken
+          minimum: 0
+          example: 8542
+        stand:
+          type: integer
+          description: Total stand hours
+          minimum: 0
+          example: 10
+        distance:
+          type: number
+          format: double
+          description: Total distance taken (meters)
+          minimum: 0
+          example: 2180.5
+        activeMinutes:
+          type: integer
+          description: Total active minutes
+          minimum: 0
+          example: 67
+        activeCalories:
+          type: number
+          format: double
+          description: Total active calories burned (kilocalorie)
+          minimum: 0
+          example: 2180.5
+        totalCalories:
+          type: number
+          format: double
+          description: Total daily calories burned (kilocalorie)
+          minimum: 0
+          example: 3000.5
+        basalMetabolicRate:
+          type: number
+          format: double
+          description: Basal metabolic rate (kilocalorie)
+          minimum: 0
+          example: 1000.5
+        averageHeartRate:
+          type: integer
+          description: Average Heart Rate
+          minimum: 0
+          example: 67
+        averageRestingHeartRate:
+          type: integer
+          description: Average Heart Rate
+          minimum: 0
+          example: 67
+        timeZone:
+          type: string
+          description: Timezone Offset value
+          example: "-0500"
 
     SuccessResponse:
       type: object

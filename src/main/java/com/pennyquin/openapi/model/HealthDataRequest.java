@@ -16,6 +16,7 @@ import java.util.Objects;
  * HealthDataRequest
  */
 
+@Deprecated
 @Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-08-29T20:36:51.586484600+02:00[Europe/Berlin]", comments = "Generator version: 7.14.0")
 public class HealthDataRequest {
 
