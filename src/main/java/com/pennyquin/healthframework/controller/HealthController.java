@@ -1,9 +1,9 @@
 package com.pennyquin.healthframework.controller;
 
-import com.pennyquin.healthframework.dto.HealthDataDTO;
+import com.pennyquin.healthframework.dto.DailyReportDTO;
 import com.pennyquin.healthframework.service.HealthDataService;
 import com.pennyquin.openapi.api.HealthApi;
-import com.pennyquin.openapi.model.HealthDataRequest;
+import com.pennyquin.openapi.model.DailyReportRequest;
 import com.pennyquin.openapi.model.SuccessResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,9 +14,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.ZoneOffset;
+import java.util.TimeZone;
+
 @RestController
 public class HealthController implements HealthApi {
-
 
     private static final Logger log = LoggerFactory.getLogger(HealthController.class);
     
@@ -24,9 +26,9 @@ public class HealthController implements HealthApi {
     private HealthDataService healthDataService;
 
     @Override
-    public ResponseEntity<SuccessResponse> healthDataPost(HealthDataRequest healthDataRequest) {
+    public ResponseEntity<SuccessResponse> healthDataDailyPost(DailyReportRequest dailyReportRequest) {
         try {
-            if (healthDataRequest == null) {
+            if (dailyReportRequest == null) {
                 return ResponseEntity.badRequest().build();
             }
 
@@ -37,15 +39,21 @@ public class HealthController implements HealthApi {
 
             String userId = authentication.getPrincipal().toString();
 
-            HealthDataDTO healthDataDTO = new HealthDataDTO(
+            DailyReportDTO dailyReportDTO = new DailyReportDTO(
                     userId,
-                    healthDataRequest.getTotalSteps(),
-                    healthDataRequest.getTotalActiveMinutes(),
-                    healthDataRequest.getTotalCaloriesBurned(),
-                    healthDataRequest.getDate()
-            );
+                    dailyReportRequest.getDate(),
+                    dailyReportRequest.getSteps(),
+                    dailyReportRequest.getStand(),
+                    dailyReportRequest.getDistance(),
+                    dailyReportRequest.getActiveMinutes(),
+                    dailyReportRequest.getActiveCalories(),
+                    dailyReportRequest.getTotalCalories(),
+                    dailyReportRequest.getBasalMetabolicRate(),
+                    dailyReportRequest.getAverageHeartRate(),
+                    dailyReportRequest.getAverageRestingHeartRate(),
+                    dailyReportRequest.getTimeZone());
 
-            healthDataService.saveHealthData(healthDataDTO);
+            healthDataService.saveHealthData(dailyReportDTO);
 
             SuccessResponse response = new SuccessResponse();
             response.setMessage("Health data submitted successfully");

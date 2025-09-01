@@ -165,8 +165,8 @@
                             <configHelp>false</configHelp>
                             <configOptions>
                                 <useJakartaEe>true</useJakartaEe>
-                                <apiPackage>com.pennyquin.api</apiPackage>
-                                <modelPackage>com.pennyquin.model</modelPackage>
+                                <apiPackage>com.pennyquin.openapi.api</apiPackage>
+                                <modelPackage>com.pennyquin.openapi.model</modelPackage>
                             </configOptions>
                         </configuration>
                     </execution>
